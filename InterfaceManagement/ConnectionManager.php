@@ -5,43 +5,41 @@ use CM\InterfaceManagement\SocketException;
 
 class ConnectionManager {
 
-   private $socketAddress;
+    private $socketAddress;
 
-   private $managementSocket;
+    private $managementSocket;
 
     public function __construct($socketAddress) {
         $this->socketAddress = $socketAddress;
-        $managementSocket = new ManagementSocket();
-        $this->managementSocket = $managementSocket;
+        $this->managementSocket = new ManagementSocket();
     }
 
     public function connections() {
         $connectionList = [];
         try {
-            $this->managementSocket->open($socketAddress);
-            $connectionList = array_merge($connectionList, StatusParser::parse($this->managementSocket->command('status 2')));
+            $this->managementSocket->open($this->socketAddress);
+            $connectionList = StatusParser::parse($this->managementSocket->command('status 2'));
             $this->managementSocket->close();
-        } catch (ManagementSocketException $e) {
-            die(sprintf('error with socket "%s": "%s"', $socketAddress, $e->getMessage()));
+        } catch (SocketException $e) {
+            die(sprintf('error with socket "%s": "%s"',$this->socketAddress, $e->getMessage()));
         }
 
         return $connectionList;
     }
 
     public function disconnect($commonName) {
-        foreach ($this->socketAddressList as $socketAddress) {
-            try {
-                $this->managementSocket->open($socketAddress);
-                $result = $this->managementSocket->command(sprintf('kill %s', $commonName));
-                if (0 === strpos($result[0], 'SUCCESS: ')) {
-                    return true;
-                }
-                $this->managementSocket->close();
-            } catch (ManagementSocketException $e) {
-                die(sprintf('error with socket "%s": "%s"', $socketAddress, $e->getMessage()));
+        $status = false;
+        try {
+            $this->managementSocket->open($this->socketAddress);
+            $result = $this->managementSocket->command(sprintf('kill %s', $commonName));
+            if (strpos($result[0], 'SUCCESS: ') === 1) {
+                $status = true;
             }
+            $this->managementSocket->close();
+        } catch (SocketException $e) {
+            die(sprintf('error with socket "%s": "%s"', $this->socketAddress, $e->getMessage()));
         }
 
-        return false;
+        return $status;
     }
 }

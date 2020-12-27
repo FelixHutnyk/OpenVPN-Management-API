@@ -8,7 +8,7 @@ class ManagementSocket {
 
     public function open($socketAddress, $timeOut = 5) {
         $socket = stream_socket_client($socketAddress, $errno, $errstr, $timeOut);
-        if (false === $socket) {
+        if (is_null($socket)) {
             throw new SocketException(sprintf('%s (%d)', $errstr, $errno));
         }
         $this->socket = $socket;
@@ -17,25 +17,25 @@ class ManagementSocket {
     }
 
     public function command($command) {
-        if (null === $this->socket) {
+        if (is_null($this->socket)) {
             throw new SocketException('socket not open');
         }
-        self::write($this->socket, sprintf("%sn", $command));
+        self::write($this->socket, $command);
 
         return self::read($this->socket);
     }
 
     public function close() {
-        if (null === $this->socket) {
+        if (is_null($this->socket)) {
             throw new SocketException('socket not open');
         }
-        if (false === fclose($this->socket)) {
+        if (fclose($this->socket) === false) {
             throw new SocketException('unable to close the socket');
         }
     }
 
     private static function write($socket, $data) {
-        if (false === fwrite($socket, $data)) {
+        if (fwrite($socket, $data) === false) {
             throw new SocketException('unable to write to socket');
         }
     }
@@ -44,7 +44,7 @@ class ManagementSocket {
         $dataBuffer = [];
         while (!feof($socket) && !self::isEndOfResponse(end($dataBuffer))) {
             $readData = fgets($socket, 4096);
-            if (false === $readData) {
+            if ($readData === false) {
                 throw new SocketException('unable to read from socket');
             }
             $dataBuffer[] = trim($readData);
@@ -56,7 +56,7 @@ class ManagementSocket {
     private static function isEndOfResponse($lastLine) {
         $endMarkers = ['END', 'SUCCESS: ', 'ERROR: '];
         foreach ($endMarkers as $endMarker) {
-            if (0 === strpos($lastLine, $endMarker)) {
+            if (strpos($lastLine, $endMarker) === 0) {
                 return true;
             }
         }

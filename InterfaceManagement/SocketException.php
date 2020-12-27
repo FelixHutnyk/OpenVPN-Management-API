@@ -1,5 +1,6 @@
 <?php
 namespace CM\InterfaceManagement;
+
 use Exception;
 
-class ManagementSocketException extends Exception {}
+class SocketException extends Exception {}

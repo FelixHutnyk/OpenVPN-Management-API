@@ -12,7 +12,7 @@ class StatusParser {
         }
         $clientKeys = array_slice(str_getcsv($statusData[$i]), 2);
         ++$i;
-        while (0 === strpos($statusData[$i], 'CLIENT_LIST')) {
+        while (strpos($statusData[$i], 'CLIENT_LIST') === 0) {
             $clientValues = str_getcsv($statusData[$i]);
             array_shift($clientValues);
             $clientInfo = array_combine($clientKeys, $clientValues);

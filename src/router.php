@@ -44,8 +44,7 @@ $app->group("/v1", function () use ($app) {
 
 	$app->get("/connections", function (Request $request, Response $response) {
 
-		$serverManager = new ConnectionManager('tcp://localhost:48205');
-		if(isnull($serverManager)) die('no');
+		$serverManager = new ConnectionManager('tcp://127.0.0.1:48205');
 		$connections = $serverManager->connections();
 
 		$data['connections'] = $connections;
@@ -67,7 +66,7 @@ $app->group("/v1", function () use ($app) {
 
 		$username = $request->getParam("username");
 
-		$serverManager = new ConnectionManager('tcp://localhost:48205');
+		$serverManager = new ConnectionManager('tcp://127.0.0.1:48205');
 
 		$status = $serverManager->disconnect($username);
 
