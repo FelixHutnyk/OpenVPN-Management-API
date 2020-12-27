@@ -8,7 +8,7 @@ use Monolog\Handler\StreamHandler;
 
 use Awurth\SlimValidation\Validator;
 use Respect\Validation\Validator as V;
-use InterfaceManagement\ConnectionManager;
+use CM\InterfaceManagement\ConnectionManager;
 
 $container = $app->getContainer();
 
@@ -44,15 +44,16 @@ $app->group("/v1", function () use ($app) {
 
 	$app->get("/connections", function (Request $request, Response $response) {
 
-		$serverManager = new ConnectionManager('tcp://127.0.0.1:48205');
-
+		$serverManager = new ConnectionManager('tcp://localhost:48205');
+		if(isnull($serverManager)) die('no');
 		$connections = $serverManager->connections();
 
+		$data['connections'] = $connections;
 		$response = $response->withHeader("Content-Type", "application/json")
 		->withStatus(200, "OK")
-		->withJson($connections);
+		->withJson($data);
 		return $response;
-	}
+	});
 
 	$app->post("/disconnect", function (Request $request, Response $response) {
 
@@ -66,32 +67,17 @@ $app->group("/v1", function () use ($app) {
 
 		$username = $request->getParam("username");
 
-		$serverManager = new ConnectionManager('tcp://127.0.0.1:48205');
+		$serverManager = new ConnectionManager('tcp://localhost:48205');
 
 		$status = $serverManager->disconnect($username);
 
-		if($status === 1) {
+		if($status) {
 			return ok($response);
 		}
 
 
 		return error($response);
-	}
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	});
 
 
 

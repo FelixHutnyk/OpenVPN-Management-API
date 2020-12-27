@@ -1,4 +1,5 @@
 <?php
+namespace CM\InterfaceManagement;
 
 class StatusParser {
 

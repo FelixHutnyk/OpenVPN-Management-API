@@ -7,10 +7,14 @@
     "authors": [
         {
             "name": "Felix Hutnyk",
-            "email": "felix.hutnyk@gmail.com",
-            "role": "Developer"
+            "email": "felix.hutnyk@gmail.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "CM\\InterfaceManagement\\": "InterfaceManagement/"
+        }
+    },
     "require": {
         "php": ">=5.6.4",
         "awurth/slim-validation": "^3.3",

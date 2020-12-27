@@ -1,5 +1,7 @@
 <?php
-use SocketException;
+namespace CM\InterfaceManagement;
+
+use CM\InterfaceManagement\SocketException;
 
 class ManagementSocket {
     private $socket = null;
@@ -62,4 +64,3 @@ class ManagementSocket {
         return false;
     }
 }
-?>
