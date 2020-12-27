@@ -6,10 +6,12 @@ use CM\InterfaceManagement\SocketException;
 class ManagementSocket {
     private $socket = null;
 
-    public function open($socketAddress, $timeOut = 5) {
-        $socket = stream_socket_client($socketAddress, $errno, $errstr, $timeOut);
-        if (is_null($socket)) {
-            throw new SocketException(sprintf('%s (%d)', $errstr, $errno));
+    public function open($socketAddress, $timeOut = 5)  {
+        $socket = \stream_socket_client($socketAddress, $errno, $errstr, $timeOut);
+        if (false === $socket) {
+            throw new ManagementSocketException(
+                \sprintf('%s (%d)', $errstr, $errno)
+            );
         }
         $this->socket = $socket;
 
@@ -17,50 +19,48 @@ class ManagementSocket {
     }
 
     public function command($command) {
-        if (is_null($this->socket)) {
-            throw new SocketException('socket not open');
+        if (null === $this->socket) {
+            throw new ManagementSocketException('socket not open');
         }
-        self::write($this->socket, $command);
+        self::write($this->socket, \sprintf("%s\n", $command));
 
         return self::read($this->socket);
     }
 
     public function close() {
-        if (is_null($this->socket)) {
-            throw new SocketException('socket not open');
+        if (null === $this->socket) {
+            throw new ManagementSocketException('socket not open');
         }
-        if (fclose($this->socket) === false) {
-            throw new SocketException('unable to close the socket');
+        if (false === \fclose($this->socket)) {
+            throw new ManagementSocketException('unable to close the socket');
         }
     }
 
     private static function write($socket, $data) {
-        if (fwrite($socket, $data) === false) {
-            throw new SocketException('unable to write to socket');
+        if (false === \fwrite($socket, $data)) {
+            throw new ManagementSocketException('unable to write to socket');
         }
     }
 
     private static function read($socket) {
         $dataBuffer = [];
-        while (!feof($socket) && !self::isEndOfResponse(end($dataBuffer))) {
-            $readData = fgets($socket, 4096);
-            if ($readData === false) {
-                throw new SocketException('unable to read from socket');
+        while (!\feof($socket) && !self::isEndOfResponse(\end($dataBuffer))) {
+            $readData = \fgets($socket, 4096);
+            if (false === $readData) {
+                throw new ManagementSocketException('unable to read from socket');
             }
-            $dataBuffer[] = trim($readData);
+            $dataBuffer[] = \trim($readData);
         }
-
         return $dataBuffer;
     }
 
     private static function isEndOfResponse($lastLine) {
         $endMarkers = ['END', 'SUCCESS: ', 'ERROR: '];
         foreach ($endMarkers as $endMarker) {
-            if (strpos($lastLine, $endMarker) === 0) {
+            if (0 === \strpos($lastLine, $endMarker)) {
                 return true;
             }
         }
-
         return false;
     }
 }

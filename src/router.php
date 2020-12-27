@@ -41,16 +41,16 @@ $app->group("/v1", function () use ($app) {
 	$app->get("/ping", function (Request $request, Response $response) {
 		return "pong";
 	});
+	require 'functions.php';
 
 	$app->get("/connections", function (Request $request, Response $response) {
-
+		
 		$serverManager = new ConnectionManager('tcp://127.0.0.1:48205');
 		$connections = $serverManager->connections();
 
-		$data['connections'] = $connections;
 		$response = $response->withHeader("Content-Type", "application/json")
 		->withStatus(200, "OK")
-		->withJson($data);
+		->withJson($connections);
 		return $response;
 	});
 

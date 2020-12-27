@@ -21,7 +21,7 @@ class ConnectionManager {
             $connectionList = StatusParser::parse($this->managementSocket->command('status 2'));
             $this->managementSocket->close();
         } catch (SocketException $e) {
-            die(sprintf('error with socket "%s": "%s"',$this->socketAddress, $e->getMessage()));
+            die(\sprintf('error with socket "%s": "%s"',$this->socketAddress, $e->getMessage()));
         }
 
         return $connectionList;
@@ -31,13 +31,13 @@ class ConnectionManager {
         $status = false;
         try {
             $this->managementSocket->open($this->socketAddress);
-            $result = $this->managementSocket->command(sprintf('kill %s', $commonName));
-            if (strpos($result[0], 'SUCCESS: ') === 1) {
+            $result = $this->managementSocket->command(\sprintf('kill %s', $commonName));
+            if (\strpos($result[0], 'SUCCESS: ') === 0) {
                 $status = true;
             }
             $this->managementSocket->close();
         } catch (SocketException $e) {
-            die(sprintf('error with socket "%s": "%s"', $this->socketAddress, $e->getMessage()));
+            die(\sprintf('error with socket "%s": "%s"', $this->socketAddress, $e->getMessage()));
         }
 
         return $status;
