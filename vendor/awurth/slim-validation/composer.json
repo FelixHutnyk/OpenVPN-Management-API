@@ -1,0 +1,41 @@
+{
+    "name": "awurth/slim-validation",
+    "description": "A validator for the Slim PHP Micro-Framework",
+    "keywords": ["validation", "validator", "respect", "slim"],
+    "homepage": "https://github.com/awurth/SlimValidation",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alexis Wurth",
+            "email": "awurth.dev@gmail.com",
+            "homepage": "https://github.com/awurth"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Awurth\\SlimValidation\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Awurth\\SlimValidation\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "php": "^7.0",
+        "psr/http-message": "^1.0",
+        "respect/validation": "^1.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.3",
+        "slim/slim": "^3.8",
+        "slim/twig-view": "^2.2"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "suggest": {
+        "twig/twig": "Needed to be able to use the Twig Extension",
+        "slim/twig-view": "Needed to be able to use the Twig Extension with Slim"
+    }
+}
