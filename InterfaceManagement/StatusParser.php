@@ -12,16 +12,17 @@ class StatusParser {
         }
         $clientKeys = array_slice(str_getcsv($statusData[$i]), 2);
         ++$i;
-        while (strpos($statusData[$i], 'CLIENT_LIST') === 0) {
-            $clientValues = str_getcsv($statusData[$i]);
-            array_shift($clientValues);
-            $clientInfo = array_combine($clientKeys, $clientValues);
+        while (\strpos($statusData[$i], 'CLIENT_LIST') === 0) {
+            $clientValues = \str_getcsv($statusData[$i]);
+            \array_shift($clientValues);
+            $clientInfo = \array_combine($clientKeys, $clientValues);
             $clientList[] = [
-                'common_name' => $clientInfo['Common Name'],
-                'virtual_address' => [
-                    $clientInfo['Virtual Address'],
-                    $clientInfo['Virtual IPv6 Address'],
-                ],
+                'username' => $clientInfo['Common Name'],
+                'real_address' => $clientInfo['Real Address'],
+                'virtual_address' => $clientInfo['Virtual Address'],
+                'bytes_received' => $clientInfo['Bytes Received'],
+                'bytes_sent' => $clientInfo['Bytes Sent'],
+                'connection_since' => $clientInfo['Connected Since (time_t)'],
             ];
             ++$i;
         }
