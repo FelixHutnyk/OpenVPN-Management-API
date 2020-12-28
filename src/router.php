@@ -33,7 +33,7 @@ $app->add(function (Request $request, Response $response, $next) {
 	$response = $next($request, $response);
 	$response = $response->withHeader('Access-Control-Allow-Origin', '*')
 	->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-	->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+	->withHeader('Access-Control-Allow-Methods', 'GET, POST');
 	return $response;
 });
 
@@ -44,7 +44,7 @@ $app->group("/v1", function () use ($app) {
 	require 'functions.php';
 
 	$app->get("/connections", function (Request $request, Response $response) {
-		
+
 		$serverManager = new ConnectionManager('tcp://127.0.0.1:48205');
 		$connections = $serverManager->connections();
 
